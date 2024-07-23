@@ -4,6 +4,7 @@ from db import get_asins, save_asins, merge_product_data_batch, sync_asins
 from create_fees import create_fees
 
 BATCH_SIZE = 20
+SLEEP_TIME = 2.5
 
 
 class AmazonData:
@@ -40,7 +41,10 @@ class AmazonData:
 
         fbm_fees = create_fees(fbm_data, fba=False)
 
-        time.sleep(2.0)
+        time.sleep(SLEEP_TIME)
+
+        if not fbm_fees:
+            return fees_data
 
         fbm_fees_data = self.api.get_batch_fees(fbm_fees)
 
@@ -69,7 +73,7 @@ class AmazonData:
 
                 if not data:
                     print("No data")
-                    time.sleep(1.8)
+                    time.sleep(SLEEP_TIME)
                     continue
 
                 fees_data = self.get_fees(data)
@@ -83,7 +87,7 @@ class AmazonData:
 
                 updated_data.extend(batch)
 
-                sleep_time = 2 - (int(time.time()) - run_time)
+                sleep_time = SLEEP_TIME - (int(time.time()) - run_time)
                 if sleep_time > 0:
                     time.sleep(sleep_time)
 

@@ -105,7 +105,7 @@ class AmazonAPI:
             print(e)
             return None
 
-    def get_batch_fees(self, fees_dict: List[dict]):
+    def get_batch_fees(self, fees_dict: List[dict], retries=0):
         try:
             response = self.product_fees.get_product_fees_estimate(fees_dict)
 
@@ -138,5 +138,10 @@ class AmazonAPI:
             return fees
 
         except Exception as e:
-            print(e)
+            if retries < 3:
+                print(f"Retrying Fees {retries}...")
+                retries += 1
+                sleep_time = int(3.0 * retries)
+                time.sleep(sleep_time)
+                return self.get_batch_fees(fees_dict, retries)
             return None

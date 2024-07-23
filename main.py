@@ -2,6 +2,7 @@ import time
 from amazon_data import AmazonData
 
 # create a docker run, update
+# change the fetch to get oldest updated_at first
 
 
 def run():

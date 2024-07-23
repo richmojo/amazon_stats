@@ -12,7 +12,7 @@ def get_asins():
     supabase = load_supabase()
     current_time = int(time.time())
     # 60 minutes
-    threshold = current_time - (60 * 60)
+    threshold = current_time - (60 * 60 * 6)
 
     asins = (
         supabase.table("amazon_asins")
