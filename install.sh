@@ -16,7 +16,7 @@ apt-get install -y docker.io
 apt-get install -y docker-compose
 
 # Change directory to your project folder
-cd /root/amazon_data
+cd /root/amazon_stats
 
 # Create .env file if it doesn't exist
 if [ ! -f ".env" ]; then
@@ -24,7 +24,7 @@ if [ ! -f ".env" ]; then
 fi
 
 # Set up cron job for update.sh script
-(crontab -l 2>/dev/null; echo "@reboot /root/amazon_data/update.sh") | crontab -
+(crontab -l 2>/dev/null; echo "@reboot /root/amazon_stats/update.sh") | crontab -
 
 # Ensure update.sh is executable
-chmod +x /root/amazon_data/update.sh
+chmod +x /root/amazon_stats/update.sh
