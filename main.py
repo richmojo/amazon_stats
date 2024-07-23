@@ -1,5 +1,5 @@
 import time
-from amazon_stats import AmazonData
+from amazon_data import AmazonData
 
 # create a docker run, update
 # change the fetch to get oldest updated_at first
