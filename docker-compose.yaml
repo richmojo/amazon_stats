@@ -4,7 +4,7 @@ services:
   amazon_stats:
     build: .
     image: ghcr.io/richmojo/amazon_stats:latest
-    container_name: amazon_data_fetcher
+    container_name: amazon_stats
     command: python -m main
     environment:
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
