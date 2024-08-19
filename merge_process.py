@@ -8,3 +8,7 @@ def merge_process():
         if not response:
             time.sleep(60)
         time.sleep(1)
+
+
+if __name__ == "__main__":
+    merge_process()
