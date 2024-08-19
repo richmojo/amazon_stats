@@ -1,4 +1,4 @@
-from sp_api.api import Products, ProductFees
+from sp_api.api import Products, ProductFees, CatalogItems
 from sp_api.base import Marketplaces
 
 import os, time

@@ -11,13 +11,13 @@ def load_supabase():
 def get_asins():
     supabase = load_supabase()
     current_time = int(time.time())
-    # 60 minutes
-    threshold = current_time - (60 * 60 * 6)
+    threshold = current_time - (60 * 60 * 24)
 
     asins = (
         supabase.table("amazon_asins")
         .select("*")
         .lt("updated_at", threshold)
+        .order("updated_at", desc=False)
         .limit(1000)
         .execute()
     )
@@ -50,6 +50,26 @@ def merge_product_data_batch():
 
 def sync_asins():
     supabase = load_supabase()
-    response = supabase.rpc("sync_asins_from_sourcing", {}).execute()
+    batch_size = 100
+    total_processed = 0
 
-    return
+    while True:
+        response = supabase.rpc(
+            "sync_asins_from_sourcing_incremental", {"batch_size": batch_size}
+        ).execute()
+        processed_count = response.data
+        total_processed += processed_count
+        print(f"Processed: {processed_count}")
+
+        if processed_count == 0:
+            break  # No more unprocessed products
+
+        time.sleep(1)
+
+    print(f"Total processed: {total_processed}")
+    return total_processed
+
+
+# https://www.amazon.com/s?k=monitors&i=todays-deals&rh=p_36%3A4800-14000&ref=nb_sb_noss_1
+
+# https://www.amazon.com/s?k=monitors&i=todays-deals&bbn=21101958011&rh=p_36%3A4800-14000&qid=1721939092&rnid=386442011&ref=sr_nr_p_36_0_0

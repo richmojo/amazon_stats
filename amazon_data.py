@@ -57,8 +57,6 @@ class AmazonData:
         return fees_data
 
     def run(self):
-        sync_asins()
-
         while True:
             updated_data = []
             batches = self.get_batches()
@@ -83,6 +81,7 @@ class AmazonData:
                     row["data"] = details
 
                     new_data = fees_data.get(asin, {})
+
                     row["data"].update(new_data)
 
                 updated_data.extend(batch)
@@ -94,14 +93,3 @@ class AmazonData:
             if updated_data:
                 print(f"Updating {len(updated_data)} batches")
                 save_asins(updated_data)
-
-            sync_asins()
-
-        while True:
-            response = merge_product_data_batch()
-            if not response:
-                break
-
-            time.sleep(1)
-
-        return
