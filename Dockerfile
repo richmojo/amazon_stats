@@ -11,6 +11,5 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # Copy the current directory contents into the container at /amazon_stats
 COPY . /amazon_stats
 
-CMD ["python3", "main.py"]
 
 

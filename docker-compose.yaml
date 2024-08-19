@@ -1,11 +1,11 @@
 version: '3.3'
 
 services:
-  amazon_data:
+  amazon_stats:
     build: .
     image: ghcr.io/richmojo/amazon_stats:latest
     container_name: amazon_data_fetcher
-    command: python -m amazon_data
+    command: python -m main
     environment:
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
