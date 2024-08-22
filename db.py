@@ -50,24 +50,53 @@ def merge_product_data_batch():
 
 def sync_asins():
     supabase = load_supabase()
-    batch_size = 100
+    batch_size = 500
     total_processed = 0
 
     while True:
-        response = supabase.rpc(
-            "sync_asins_from_sourcing_incremental", {"batch_size": batch_size}
+        # Process sourcing_products
+        response_sourcing = supabase.rpc(
+            "sync_asins_from_sourcing", {"batch_size": batch_size}
         ).execute()
-        processed_count = response.data
-        total_processed += processed_count
-        print(f"Processed: {processed_count}")
+        processed_count_sourcing = response_sourcing.data
+        total_processed += processed_count_sourcing
 
-        if processed_count == 0:
-            break  # No more unprocessed products
+        # Process a2a_products
+        response_a2a = supabase.rpc(
+            "sync_asins_from_a2a", {"batch_size": batch_size}
+        ).execute()
+        processed_count_a2a = response_a2a.data
+        total_processed += processed_count_a2a
+
+        # If nothing was processed from both, break the loop
+        if processed_count_sourcing == 0 and processed_count_a2a == 0:
+            break
 
         time.sleep(1)
 
     print(f"Total processed: {total_processed}")
     return total_processed
+
+
+def delete_asins():
+    supabase = load_supabase()
+    batch_size = 100
+    total_deleted = 0
+
+    while True:
+        response = supabase.rpc(
+            "clean_asins_batch", {"batch_size": batch_size}
+        ).execute()
+        deleted_count = response.data
+        total_deleted += deleted_count
+
+        if deleted_count == 0:
+            break
+
+        time.sleep(1)
+
+    print(f"Total deleted: {total_deleted}")
+    return total_deleted
 
 
 # https://www.amazon.com/s?k=monitors&i=todays-deals&rh=p_36%3A4800-14000&ref=nb_sb_noss_1
