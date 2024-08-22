@@ -9,4 +9,9 @@ def sync_process():
 
 
 if __name__ == "__main__":
-    sync_process()
+    while True:
+        try:
+            sync_process()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            time.sleep(60)

@@ -14,4 +14,9 @@ def merge_process():
 
 
 if __name__ == "__main__":
-    merge_process()
+    while True:
+        try:
+            merge_process()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            time.sleep(60)
