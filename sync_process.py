@@ -5,7 +5,7 @@ import time
 def sync_process():
     while True:
         sync_asins()
-        time.sleep(60)  # Adjust sleep time as necessary
+        time.sleep(600)  # Adjust sleep time as necessary
 
 
 if __name__ == "__main__":
@@ -14,4 +14,4 @@ if __name__ == "__main__":
             sync_process()
         except Exception as e:
             print(f"An error occurred: {e}")
-            time.sleep(60)
+            time.sleep(600)

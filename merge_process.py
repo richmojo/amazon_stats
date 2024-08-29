@@ -4,13 +4,16 @@ import time
 
 def merge_process():
     while True:
-        products_response = merge_product_data_batch()
-        a2a_response = merge_a2a_product_data_batch()
+        try:
+            products_response = merge_product_data_batch()
+            a2a_response = merge_a2a_product_data_batch()
 
-        if not products_response and not a2a_response:
-            time.sleep(60)
+            if not products_response and not a2a_response:
+                time.sleep(600)
 
-        time.sleep(1)
+            time.sleep(1)
+        except:
+            time.sleep(600)
 
 
 if __name__ == "__main__":
@@ -19,4 +22,4 @@ if __name__ == "__main__":
             merge_process()
         except Exception as e:
             print(f"An error occurred: {e}")
-            time.sleep(60)
+            time.sleep(600)
