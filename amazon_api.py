@@ -128,6 +128,10 @@ class AmazonAPI:
                             referral_fee = detail.get("FinalFee").get("Amount")
                         elif detail.get("FeeType") == "FBAFees":
                             fba_fee = detail.get("FinalFee").get("Amount")
+                        elif detail.get("FeeType") == "VariableClosingFee":
+                            referral_fee += detail.get("FinalFee").get("Amount")
+                        elif detail.get("FeeType") == "PerItemFee":
+                            referral_fee += detail.get("FinalFee").get("Amount")
 
                     fees[asin] = {"referral_fee": referral_fee, "fba_fee": fba_fee}
 
