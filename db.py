@@ -147,7 +147,7 @@ def sync_asins():
 
 def delete_asins():
     supabase = load_supabase()
-    batch_size = 100
+    batch_size = 50
     total_deleted = 0
 
     while True:
