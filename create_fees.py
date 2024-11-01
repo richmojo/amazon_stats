@@ -4,7 +4,7 @@ def create_fees(data, fba=False):
         new_dict = {}
         new_dict["id_type"] = "ASIN"
         new_dict["id_value"] = asin
-        new_dict["price"] = details.get("cost", 0)
+        new_dict["price"] = details.get("price", 0)
 
         if fba:
             new_dict["is_fba"] = True

@@ -1,10 +1,11 @@
-from sp_api.api import Products, ProductFees, CatalogItems
+from sp_api.api import Products, ProductFees
 from sp_api.base import Marketplaces
 
 import os, time
 from dotenv import load_dotenv
 from typing import List
 
+os.environ["ENV_DISABLE_DONATION_MSG"] = "1"
 load_dotenv()
 
 SP_API_ACCESS_KEY = os.getenv("SP_API_ACCESS_KEY")
@@ -64,7 +65,7 @@ class AmazonAPI:
                     ]
 
                     if len(prices) != 0:
-                        details["cost"] = (
+                        details["price"] = (
                             min([price.get("Amount", 0) for price in prices])
                             if prices
                             else 0
@@ -72,11 +73,17 @@ class AmazonAPI:
 
                     try:
                         details["sales_rank"] = sales_rankings[0].get("Rank", 0)
+                        details["sales_rank_category"] = sales_rankings[0].get(
+                            "ProductCategoryId", ""
+                        )
                     except:
                         pass
 
                     try:
                         details["sub_sales_rank"] = sales_rankings[1].get("Rank", 0)
+                        details["sub_sales_rank_category"] = sales_rankings[1].get(
+                            "ProductCategoryId", ""
+                        )
                     except:
                         pass
 
@@ -129,11 +136,16 @@ class AmazonAPI:
                         elif detail.get("FeeType") == "FBAFees":
                             fba_fee = detail.get("FinalFee").get("Amount")
                         elif detail.get("FeeType") == "VariableClosingFee":
-                            referral_fee += detail.get("FinalFee").get("Amount")
+                            variable_closing_fee = detail.get("FinalFee").get("Amount")
                         elif detail.get("FeeType") == "PerItemFee":
-                            referral_fee += detail.get("FinalFee").get("Amount")
+                            per_item_fee = detail.get("FinalFee").get("Amount")
 
-                    fees[asin] = {"referral_fee": referral_fee, "fba_fee": fba_fee}
+                    fees[asin] = {
+                        "referral_fee": referral_fee,
+                        "fba_fee": fba_fee,
+                        "variable_closing_fee": variable_closing_fee,
+                        "per_item_fee": per_item_fee,
+                    }
 
                 except Exception as e:
                     print(e)

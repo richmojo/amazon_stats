@@ -5,7 +5,7 @@ import time
 def sync_process():
     while True:
         sync_asins()
-        time.sleep(600)  # Adjust sleep time as necessary
+        time.sleep(600)
 
 
 if __name__ == "__main__":

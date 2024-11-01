@@ -13,7 +13,6 @@ class AmazonData:
 
     def get_batches(self):
         asins = get_asins()
-        print(f"Got {len(asins)} asins")
 
         if not asins:
             return []

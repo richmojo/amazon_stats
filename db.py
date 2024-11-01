@@ -32,10 +32,67 @@ def save_asins(data):
     supabase = load_supabase()
     updated_at = int(time.time())
 
-    for row in data:
-        row["updated_at"] = updated_at
+    final_data = []
+    updated_asins = []
 
-    supabase.table("amazon_asins").upsert(data).execute()
+    for row in data:
+        asin = row["asin"]
+        product_data = row["data"]
+        fba_fee = product_data.get("fba_fee", 0)
+        fba_fee = fba_fee if fba_fee else 0
+        fba_fee = float(fba_fee)
+        fba_fee = round(fba_fee, 2)
+
+        referral_fee = product_data.get("referral_fee", 0)
+        referral_fee = referral_fee if referral_fee else 0
+        referral_fee = float(referral_fee)
+        referral_fee = round(referral_fee, 2)
+
+        variable_closing_fee = product_data.get("variable_closing_fee", 0)
+        variable_closing_fee = variable_closing_fee if variable_closing_fee else 0
+        variable_closing_fee = float(variable_closing_fee)
+        variable_closing_fee = round(variable_closing_fee, 2)
+
+        per_item_fee = product_data.get("per_item_fee", 0)
+        per_item_fee = per_item_fee if per_item_fee else 0
+        per_item_fee = float(per_item_fee)
+        per_item_fee = round(per_item_fee, 2)
+
+        offers = product_data.get("offers", 0)
+        sales_rank = product_data.get("sales_rank", 0)
+        sales_rank_category = product_data.get("sales_rank_category", "")
+        sub_sales_rank = product_data.get("sub_sales_rank", 0)
+        sub_sales_rank_category = product_data.get("sub_sales_rank_category", "")
+
+        price = product_data.get("price", 0)
+        fba_fee_percentage = fba_fee / price if price else 0
+        fba_fee_percentage = round(fba_fee_percentage, 2)
+        referral_fee_percentage = referral_fee / price if price else 0
+        referral_fee_percentage = round(referral_fee_percentage, 2)
+
+        final_data.append(
+            {
+                "asin": asin,
+                "fba_fee": fba_fee,
+                "fba_fee_percentage": fba_fee_percentage,
+                "referral_fee": referral_fee,
+                "referral_fee_percentage": referral_fee_percentage,
+                "variable_closing_fee": variable_closing_fee,
+                "per_item_fee": per_item_fee,
+                "offers": offers,
+                "sales_rank": sales_rank,
+                "sales_rank_category": sales_rank_category,
+                "sub_sales_rank": sub_sales_rank,
+                "sub_sales_rank_category": sub_sales_rank_category,
+                "price": price,
+                "updated_at": updated_at,
+            }
+        )
+
+        updated_asins.append({"asin": asin, "updated_at": updated_at})
+
+    supabase.table("amazon_data").upsert(final_data).execute()
+    supabase.table("amazon_asins").upsert(updated_asins).execute()
 
 
 def merge_product_data_batch():
@@ -107,8 +164,3 @@ def delete_asins():
 
     print(f"Total deleted: {total_deleted}")
     return total_deleted
-
-
-# https://www.amazon.com/s?k=monitors&i=todays-deals&rh=p_36%3A4800-14000&ref=nb_sb_noss_1
-
-# https://www.amazon.com/s?k=monitors&i=todays-deals&bbn=21101958011&rh=p_36%3A4800-14000&qid=1721939092&rnid=386442011&ref=sr_nr_p_36_0_0
