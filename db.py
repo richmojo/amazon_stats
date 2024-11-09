@@ -115,6 +115,16 @@ def merge_a2a_product_data_batch():
     return False
 
 
+def merge_reverse_sourcing_data_batch():
+    supabase = load_supabase()
+    response = supabase.rpc("update_batch_reverse_sourcing_products", {}).execute()
+
+    if response:
+        return response.data
+
+    return False
+
+
 def sync_asins():
     supabase = load_supabase()
     batch_size = 500
