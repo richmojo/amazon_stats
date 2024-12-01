@@ -49,7 +49,10 @@ class AmazonAPI:
                     # Add the asin to the details
                     asin = product["ASIN"]
 
-                    product = product["Product"]
+                    product = product.get("Product", {})
+
+                    if not product:
+                        continue
 
                     competitive_pricing = product.get("CompetitivePricing", {})
                     sales_rankings = product.get("SalesRankings", [{}])
