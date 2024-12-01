@@ -12,35 +12,21 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
     restart: always
 
-  sync_service:
+  cron_service:
     build: .
     image: ghcr.io/richmojo/amazon_stats:latest
-    container_name: sync_process
-    command: python -m sync_process
+    container_name: cron_service
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        apt-get update && apt-get -y install cron
+        echo "0,30 * * * * python -m sync_process" >> /etc/cron.d/jobs
+        echo "15,45 * * * * python -m merge_process" >> /etc/cron.d/jobs
+        echo "5 * * * * python -m delete_process" >> /etc/cron.d/jobs
+        chmod 0644 /etc/cron.d/jobs
+        crontab /etc/cron.d/jobs
+        cron -f
     environment:
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-    restart: always
-
-  merge_service:
-    build: .
-    image: ghcr.io/richmojo/amazon_stats:latest
-    container_name: merge_process
-    command: python -m merge_process
-    environment:
-      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-    restart: always
-
-  delete_service:
-    build: .
-    image: ghcr.io/richmojo/amazon_stats:latest
-    container_name: delete_process
-    command: python -m delete_process
-    environment:
-      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-    restart: always

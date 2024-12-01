@@ -3,15 +3,12 @@ import time
 
 
 def sync_process():
-    while True:
+    try:
         sync_asins()
+    except Exception as e:
+        print(f"Error in sync process: {e}")
         time.sleep(600)
 
 
 if __name__ == "__main__":
-    while True:
-        try:
-            sync_process()
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            time.sleep(600)
+    sync_process()
