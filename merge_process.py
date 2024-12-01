@@ -44,9 +44,6 @@ def merge_process():
             if not any([products_response, a2a_response, reverse_sourcing_response]):
                 return
 
-            print(
-                f"Processed: {products_response}, {a2a_response}, {reverse_sourcing_response}, continuing..."
-            )
             time.sleep(1)
         except Exception as e:
             print(f"Error in merge process: {e}")
