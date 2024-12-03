@@ -14,6 +14,7 @@ class AmazonData:
     def __init__(self):
         self.api = AmazonAPI()
         self._setup_logging()
+        self.product_sourced_today = 0
 
     def _setup_logging(self):
         logging.basicConfig(
@@ -110,4 +111,15 @@ class AmazonData:
                 self.logger.info(
                     f"[{current_time}] Updating {len(updated_data)} batches"
                 )
+                self.logger.info(
+                    f"Products sourced today: {self.product_sourced_today}"
+                )
                 save_asins(updated_data)
+                self.product_sourced_today += len(updated_data)
+
+                # Reset counter at midnight
+                if datetime.now().hour == 0 and datetime.now().minute == 0:
+                    self.logger.info(
+                        f"Resetting daily counter. Previous count: {self.product_sourced_today}"
+                    )
+                    self.product_sourced_today = 0
