@@ -1,4 +1,5 @@
 import time
+import logging
 from amazon_api import AmazonAPI
 from db import get_asins, save_asins, merge_product_data_batch, sync_asins
 from create_fees import create_fees
@@ -12,6 +13,15 @@ SLEEP_TIME = 2.5
 class AmazonData:
     def __init__(self):
         self.api = AmazonAPI()
+        self._setup_logging()
+
+    def _setup_logging(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+        self.logger = logging.getLogger(__name__)
 
     def get_batches(self):
         asins = get_asins()
@@ -58,23 +68,32 @@ class AmazonData:
         return fees_data
 
     def run(self):
+        self.logger.info("Starting Amazon Data sync...")
         while True:
             updated_data = []
             batches = self.get_batches()
 
             if not batches:
+                self.logger.info("No batches found, ending sync")
                 break
 
-            for batch in batches:
+            self.logger.info(f"Found {len(batches)} batches to process")
+
+            for batch_num, batch in enumerate(batches, 1):
                 batch_asins = [asin["asin"] for asin in batch]
+                self.logger.info(
+                    f"Processing batch {batch_num}/{len(batches)} - ASINs: {', '.join(batch_asins)}"
+                )
+
                 data = self.get_product_details(batch_asins)
                 run_time = int(time.time())
 
                 if not data:
-                    print("No data")
+                    self.logger.warning(f"No data received for batch {batch_num}")
                     time.sleep(SLEEP_TIME)
                     continue
 
+                self.logger.info(f"Fetching fees for batch {batch_num}")
                 fees_data = self.get_fees(data)
 
                 for asin, details in data.items():
@@ -93,5 +112,7 @@ class AmazonData:
 
             if updated_data:
                 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print(f"[{current_time}] Updating {len(updated_data)} batches")
+                self.logger.info(
+                    f"[{current_time}] Updating {len(updated_data)} batches"
+                )
                 save_asins(updated_data)
