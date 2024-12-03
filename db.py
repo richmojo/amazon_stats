@@ -10,13 +10,10 @@ def load_supabase():
 
 def get_asins():
     supabase = load_supabase()
-    current_time = int(time.time())
-    threshold = current_time - (60 * 60 * 24)
 
     asins = (
         supabase.table("amazon_asins")
         .select("*")
-        .lt("updated_at", threshold)
         .order("updated_at", desc=False)
         .limit(1000)
         .execute()
