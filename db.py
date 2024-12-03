@@ -33,7 +33,7 @@ def save_asins(data):
     updated_at = int(time.time())
 
     final_data = []
-    updated_asins = []
+    asins_to_delete = []
 
     for row in data:
         asin = row["asin"]
@@ -89,10 +89,10 @@ def save_asins(data):
             }
         )
 
-        updated_asins.append({"asin": asin, "updated_at": updated_at})
+        asins_to_delete.append(asin)
 
     supabase.table("amazon_data").upsert(final_data).execute()
-    supabase.table("amazon_asins").upsert(updated_asins).execute()
+    supabase.table("amazon_asins").delete().in_("asin", asins_to_delete).execute()
 
 
 def merge_product_data_batch():
