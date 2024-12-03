@@ -89,7 +89,6 @@ class AmazonData:
                     time.sleep(SLEEP_TIME)
                     continue
 
-                self.logger.info(f"Fetching fees for batch {batch_num}")
                 fees_data = self.get_fees(data)
 
                 for asin, details in data.items():
