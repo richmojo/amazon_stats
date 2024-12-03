@@ -46,6 +46,9 @@ class AmazonAPI:
                 try:
                     details = {}
 
+                    if not product:
+                        continue
+
                     # Add the asin to the details
                     asin = product["ASIN"]
 

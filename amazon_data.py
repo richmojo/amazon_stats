@@ -2,6 +2,8 @@ import time
 from amazon_api import AmazonAPI
 from db import get_asins, save_asins, merge_product_data_batch, sync_asins
 from create_fees import create_fees
+from datetime import datetime
+
 
 BATCH_SIZE = 20
 SLEEP_TIME = 2.5
@@ -90,5 +92,6 @@ class AmazonData:
                     time.sleep(sleep_time)
 
             if updated_data:
-                print(f"Updating {len(updated_data)} batches")
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{current_time}] Updating {len(updated_data)} batches")
                 save_asins(updated_data)
