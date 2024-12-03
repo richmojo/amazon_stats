@@ -10,19 +10,35 @@ def load_supabase():
 
 def get_asins():
     supabase = load_supabase()
+    asins = []
 
-    asins = (
+    # First get non-a2a tasks
+    non_a2a_asins = (
         supabase.table("amazon_asins")
-        .select("*")
+        .select("asin")
+        .eq("task_type", "non_a2a")
         .order("updated_at", desc=False)
         .limit(1000)
         .execute()
     )
 
-    if asins:
-        return asins.data
+    if non_a2a_asins and non_a2a_asins.data:
+        asins.extend(non_a2a_asins.data)
 
-    return []
+    if len(asins) < 1000:
+        a2a_asins = (
+            supabase.table("amazon_asins")
+            .select("asin")
+            .eq("task_type", "a2a")
+            .order("updated_at", desc=False)
+            .limit(1000)
+            .execute()
+        )
+
+        if a2a_asins and a2a_asins.data:
+            asins.extend(a2a_asins.data)
+
+    return asins
 
 
 def save_asins(data):
