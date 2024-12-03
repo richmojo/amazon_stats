@@ -77,13 +77,8 @@ class AmazonData:
                 self.logger.info("No batches found, ending sync")
                 break
 
-            self.logger.info(f"Found {len(batches)} batches to process")
-
             for batch_num, batch in enumerate(batches, 1):
                 batch_asins = [asin["asin"] for asin in batch]
-                self.logger.info(
-                    f"Processing batch {batch_num}/{len(batches)} - ASINs: {', '.join(batch_asins)}"
-                )
 
                 data = self.get_product_details(batch_asins)
                 run_time = int(time.time())
