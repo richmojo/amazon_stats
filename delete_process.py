@@ -11,4 +11,6 @@ def delete_process():
 
 
 if __name__ == "__main__":
-    delete_process()
+    while True:
+        delete_process()
+        time.sleep(60 * 5)

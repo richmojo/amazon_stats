@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # Copy the current directory contents into the container at /amazon_stats
 COPY . /amazon_stats
 
-# Run main.py
+# Default command (will be overridden by docker-compose)
 CMD ["python", "/amazon_stats/main.py"]
 
 

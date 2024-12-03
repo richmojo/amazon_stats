@@ -28,4 +28,6 @@ def sync_process():
 
 
 if __name__ == "__main__":
-    sync_process()
+    while True:
+        sync_process()
+        time.sleep(60 * 5) 

@@ -51,4 +51,6 @@ def merge_process():
 
 
 if __name__ == "__main__":
-    merge_process()
+    while True:
+        merge_process()
+        time.sleep(60 * 5)
