@@ -107,6 +107,7 @@ class AmazonData:
 
             if updated_data:
                 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.product_sourced_today += len(updated_data)
                 self.logger.info(
                     f"[{current_time}] Updating {len(updated_data)} batches"
                 )
