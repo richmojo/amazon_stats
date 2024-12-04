@@ -18,20 +18,20 @@ def get_asins():
         .select("asin")
         .eq("task_type", "non_a2a")
         .order("updated_at", desc=False)
-        .limit(1000)
+        .limit(10)
         .execute()
     )
 
     if non_a2a_asins and non_a2a_asins.data:
         asins.extend(non_a2a_asins.data)
 
-    if len(asins) < 1000:
+    if len(asins) < 10:
         a2a_asins = (
             supabase.table("amazon_asins")
             .select("asin")
             .eq("task_type", "a2a")
             .order("updated_at", desc=False)
-            .limit(1000)
+            .limit(10)
             .execute()
         )
 
@@ -148,14 +148,29 @@ def sync_asins():
         response_sourcing = supabase.rpc(
             "sync_asins_from_sourcing", {"batch_size": batch_size}
         ).execute()
-        processed_count_sourcing = response_sourcing.data
+        # Get the count from the 'ASINs inserted/updated' row
+        processed_count_sourcing = next(
+            (
+                row["count"]
+                for row in response_sourcing.data
+                if row["operation_type"] == "ASINs inserted/updated"
+            ),
+            0,
+        )
         total_processed += processed_count_sourcing
 
         # Process a2a_products
         response_a2a = supabase.rpc(
             "sync_asins_from_a2a", {"batch_size": batch_size}
         ).execute()
-        processed_count_a2a = response_a2a.data
+        processed_count_a2a = next(
+            (
+                row["count"]
+                for row in response_a2a.data
+                if row["operation_type"] == "ASINs inserted/updated"
+            ),
+            0,
+        )
         total_processed += processed_count_a2a
 
         # If nothing was processed from both, break the loop
@@ -187,3 +202,6 @@ def delete_asins():
 
     print(f"Total deleted: {total_deleted}")
     return total_deleted
+
+
+raw_products = []
