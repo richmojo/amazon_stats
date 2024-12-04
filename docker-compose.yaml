@@ -23,6 +23,17 @@ services:
     command: python /amazon_stats/merge_process.py
     restart: always
 
+  delete:
+    build: .
+    image: ghcr.io/richmojo/amazon_stats:latest
+    container_name: amazon_stats_delete
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+    command: python /amazon_stats/delete_process.py
+    restart: always
+
   sync:
     build: .
     image: ghcr.io/richmojo/amazon_stats:latest
