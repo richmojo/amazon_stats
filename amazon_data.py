@@ -114,7 +114,11 @@ class AmazonData:
                 self.logger.info(
                     f"Products sourced today: {self.product_sourced_today}"
                 )
-                updated_data = [data for data in updated_data if data.get("data")]
+                # add empty data if its not there
+                for row in updated_data:
+                    if "data" not in row:
+                        row["data"] = {}
+
                 save_asins(updated_data)
                 self.product_sourced_today += len(updated_data)
 
